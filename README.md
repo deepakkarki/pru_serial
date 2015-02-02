@@ -1,7 +1,7 @@
 PRU Serial
 ==========
 
-The aim of this project is to create an arduino like serial port library for the PRU. The serial channels are meant to communicate with the linux host, not an actual hardware device. This is quite useful while debugging PRU firmware and generally to stream data to the Linux userspace. 
+The aim of this project is to create a multi channel messaging library for the PRU. Having a serial interface makes working with the arduino really simple, pru_serial aims to do the same for the PRU. This is quite useful while debugging PRU firmware and generally to stream data to the Linux userspace. 
 
 **Status** : Under Implementation.
 
@@ -9,7 +9,7 @@ The aim of this project is to create an arduino like serial port library for the
 
 **The API's can change, suggestions welcome!**
 
-From the PRU side :
+####From the PRU side :
 ```
       //create a channel ch
       int serial_create_channel(int ch);
@@ -28,10 +28,19 @@ From the PRU side :
 
 ```
 
-From the Linux side : 
+####From the Linux side : 
 
+In python
+```python
+      import pru
+      pru.send("data", channel) #direct write to channel
+      #internally calls low level fn : pru.downcall(down_call_no, *args) => causes downcall to PRU
 ```
-      The channels will be represented as files by the kernel driver. So normal IO operations will work :)
+
+In Node
+```js
+      var pru = require("pru");
+      pru.read(channel, function (err, data) { /*callback*/ });
 ```
 
 ##Implementation 
@@ -40,3 +49,4 @@ This will be a nice working example a messaging system between asymmetric multi-
 
 Internally there will be a set of shared memory buffers. Data will be written into these buffers in a cyclic manner. One of the buffer will be reserved as the **control data buffer** which is used by the kernel **and** the PRU to share control data (over flow, read head, write head, etc).
 
+The driver will expose number of sysfs files, each corresponding to a channel number.
