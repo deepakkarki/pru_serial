@@ -7,10 +7,11 @@ The aim of this project is to create a multi channel messaging library for the P
 
 ##API (proposed)
 
-**The API's can change, suggestions welcome!**
+*The API's can change, suggestions welcome!*
 
 ####From the PRU side :
-```
+
+```c
       //create a channel ch
       int serial_create_channel(int ch);
       
